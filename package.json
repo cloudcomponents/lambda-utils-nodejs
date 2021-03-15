@@ -1,0 +1,52 @@
+{
+  "name": "@cloudcomponents/lambda-utils",
+  "version": "1.0.0",
+  "description": "Lambda utils for cloudcomponents cdk constructs",
+  "license": "MIT",
+  "author": {
+    "name": "hupe1980",
+    "url": "https://github.com/hupe1980"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cloudcomponents/lambda-utils-nodejs.git"
+  },
+  "homepage": "https://github.com/cloudcomponents/lambda-utils-nodejs",
+  "keywords": [
+    "aws",
+    "@cloudcomponents"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "rimraf lib && tsc",
+    "build:watch": "rimraf lib && tsc -w",
+    "test": "jest",
+    "lint": "eslint '*/**/*.{ts,tsx}' --report-unused-disable-directives",
+    "prepare": "yarn build && yarn test"
+  },
+  "peerDependencies": {
+    "aws-sdk": ">=2.0"
+  },
+  "dependencies": {
+    "aws-parameter-cache": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.20",
+    "@types/node": "12",
+    "@typescript-eslint/eslint-plugin": "^4.17.0",
+    "@typescript-eslint/parser": "^4.17.0",
+    "aws-sdk": "^2.863.0",
+    "eslint": "^7.22.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "jest": "^26.6.3",
+    "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.3",
+    "typescript": "^4.2.3"
+  }
+}
