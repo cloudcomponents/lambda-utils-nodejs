@@ -28,6 +28,21 @@ export const handler = async (event, context) => {
 
 ```
 
+### SecretKeyStore
+```typescript
+import { SecretKeyStore } from "@cloudcomponents/lambda-utils";
+
+const secretKeyStore = new SecretKeyStore();
+const secretKeyStoreString = process.env.SECRET_KEY_STORE_STRING as string;
+
+export const handler = async (event, context) => {
+  const value = "secret"
+  await secretKey.putValue(secretKeyStoreString, value);
+  return `Hello`
+}
+
+```
+
 ## License
 
 [MIT](LICENSE)
