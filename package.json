@@ -1,6 +1,6 @@
 {
   "name": "@cloudcomponents/lambda-utils",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Lambda utils for cloudcomponents cdk constructs",
   "license": "MIT",
   "author": {
