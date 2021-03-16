@@ -18,30 +18,31 @@ npm i @cloudcomponents/lambda-utils
 ```typescript
 import { SecretKey } from "@cloudcomponents/lambda-utils";
 
-const secretKey = new SecretKey();
-const secretKeyString = process.env.SECRET_KEY_STRING as string;
+const secretKey = new SecretKey(process.env.SECRET_KEY_STRING as string);
 
 export const handler = async (event, context) => {
-  const value = await secretKey.getValue(secretKeyString);
+  const value = await secretKey.getValue();
   return `Hello ${value}`
 }
 
 ```
 
+See [cdk-secret-key](https://github.com/cloudcomponents/cdk-constructs/tree/master/packages/cdk-secret-key) for the cdk counterpart
+
 ### SecretKeyStore
 ```typescript
 import { SecretKeyStore } from "@cloudcomponents/lambda-utils";
 
-const secretKeyStore = new SecretKeyStore();
-const secretKeyStoreString = process.env.SECRET_KEY_STORE_STRING as string;
+const secretKeyStore = new SecretKeyStore(process.env.SECRET_KEY_STORE_STRING as string);
 
 export const handler = async (event, context) => {
   const value = "secret"
-  await secretKey.putValue(secretKeyStoreString, value);
+  await secretKey.putValue(value);
   return `Hello`
 }
 
 ```
+See [cdk-secret-key](https://github.com/cloudcomponents/cdk-constructs/tree/master/packages/cdk-secret-key) for the cdk counterpart
 
 ## License
 

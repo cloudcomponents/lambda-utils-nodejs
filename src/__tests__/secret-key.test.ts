@@ -26,9 +26,9 @@ test("plain text secret", async () => {
     value,
   });
 
-  const secretKey = new SecretKey();
+  const secretKey = new SecretKey(secretKeyString);
 
-  expect(await secretKey.getValue(secretKeyString)).toBe(value);
+  expect(await secretKey.getValue()).toBe(value);
 });
 
 test("ssm parameter secret", async () => {
@@ -46,9 +46,9 @@ test("ssm parameter secret", async () => {
     parameterName,
   });
 
-  const secretKey = new SecretKey();
+  const secretKey = new SecretKey(secretKeyString);
 
-  expect(await secretKey.getValue(secretKeyString)).toBe(value);
+  expect(await secretKey.getValue()).toBe(value);
 });
 
 test("secrets manger secret", async () => {
@@ -62,9 +62,9 @@ test("secrets manger secret", async () => {
     secretId,
   });
 
-  const secretKey = new SecretKey();
+  const secretKey = new SecretKey(secretKeyString);
 
-  expect(await secretKey.getValue(secretKeyString)).toBe(value);
+  expect(await secretKey.getValue()).toBe(value);
 });
 
 test("secrets manger secret with fieldName", async () => {
@@ -80,7 +80,7 @@ test("secrets manger secret with fieldName", async () => {
     fieldName: "xxx",
   });
 
-  const secretKey = new SecretKey();
+  const secretKey = new SecretKey(secretKeyString);
 
-  expect(await secretKey.getValue(secretKeyString)).toBe(value);
+  expect(await secretKey.getValue()).toBe(value);
 });

@@ -19,10 +19,13 @@ export interface SecretKeyOptions {
 export class SecretKey {
   private param?: Parameter | Secret;
 
-  constructor(private options?: SecretKeyOptions) {}
+  constructor(
+    private readonly secretKeyString: string,
+    private readonly options?: SecretKeyOptions
+  ) {}
 
-  public async getValue(secretKeyString: string): Promise<string> {
-    const { secretKeyType, ...props } = JSON.parse(secretKeyString);
+  public async getValue(): Promise<string> {
+    const { secretKeyType, ...props } = JSON.parse(this.secretKeyString);
 
     switch (secretKeyType) {
       case KeyType.PLAIN_TEXT:

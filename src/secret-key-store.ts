@@ -8,10 +8,13 @@ export interface SecretKeyStoreOptions {
 }
 
 export class SecretKeyStore {
-  constructor(private options?: SecretKeyStoreOptions) {}
+  constructor(
+    private readonly secretKeyStoreString: string,
+    private readonly options?: SecretKeyStoreOptions
+  ) {}
 
-  public putSecret(secretKeyStoreString: string, value: string): Promise<void> {
-    const { secretKeyType, ...props } = JSON.parse(secretKeyStoreString);
+  public putSecret(value: string): Promise<void> {
+    const { secretKeyType, ...props } = JSON.parse(this.secretKeyStoreString);
     switch (secretKeyType) {
       case KeyType.SSM_PARAMETER: {
         return this.putParameter(props.parameterName, value);

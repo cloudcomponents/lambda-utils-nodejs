@@ -27,9 +27,9 @@ test("ssm parameter store", async () => {
     parameterName,
   });
 
-  const secretKeyStore = new SecretKeyStore();
+  const secretKeyStore = new SecretKeyStore(secretKeyStoreString);
 
-  secretKeyStore.putSecret(secretKeyStoreString, value);
+  secretKeyStore.putSecret(value);
 
   expect(ssmMock.getParameter(parameterName).Value).toBe(value);
 });
@@ -43,9 +43,9 @@ test("secrets manger store", async () => {
     secretId,
   });
 
-  const secretKeyStore = new SecretKeyStore();
+  const secretKeyStore = new SecretKeyStore(secretKeyStoreString);
 
-  secretKeyStore.putSecret(secretKeyStoreString, value);
+  secretKeyStore.putSecret(value);
 
   expect(secretsManagerMock.getSecretString(secretId)).toBe(value);
 });
