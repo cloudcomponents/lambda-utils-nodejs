@@ -1,10 +1,11 @@
-import { SecretsManager, SSM, ConfigurationOptions } from "aws-sdk";
+import { PutSecretValueCommand, PutSecretValueCommandInput, SecretsManagerClient } from "@aws-sdk/client-secrets-manager";
+import { PutParameterCommand, PutParameterCommandInput, SSMClient, SSMClientConfig } from "@aws-sdk/client-ssm";
 
 import { KeyType } from "./key-type";
 
 export interface SecretKeyStoreOptions {
   /** The service configuration options */
-  readonly configuration?: ConfigurationOptions;
+  readonly configuration?: SSMClientConfig;
 }
 
 export class SecretKeyStore {
@@ -31,22 +32,22 @@ export class SecretKeyStore {
     parameterName: string,
     value: string
   ): Promise<void> {
-    const ssm = new SSM(this.options?.configuration);
-    const params: SSM.Types.PutParameterRequest = {
+    const ssm = new SSMClient(this.options?.configuration ?? {});
+    const params: PutParameterCommandInput = {
       Name: parameterName,
       Value: value,
       Type: "SecureString",
       Overwrite: true,
     };
-    await ssm.putParameter(params).promise();
+    await ssm.send(new PutParameterCommand(params));
   }
 
   private async putSecretValue(secretId: string, value: string): Promise<void> {
-    const secretsManager = new SecretsManager(this.options?.configuration);
-    const params: SecretsManager.Types.PutSecretValueRequest = {
+    const secretsManager = new SecretsManagerClient(this.options?.configuration ?? {});
+    const params: PutSecretValueCommandInput = {
       SecretId: secretId,
       SecretString: value,
     };
-    await secretsManager.putSecretValue(params).promise();
+    await secretsManager.send(new PutSecretValueCommand(params));
   }
 }

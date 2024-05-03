@@ -1,26 +1,30 @@
-import { SSMParameterMock } from "./ssm-parameter-mock";
-import { SecretsManagerMock } from "./secrets-manager-mock";
+import { PutSecretValueCommand, SecretsManagerClient } from "@aws-sdk/client-secrets-manager";
+import { ParameterType, PutParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
+import { mockClient } from 'aws-sdk-client-mock';
+import 'aws-sdk-client-mock-jest';
+
 import { SecretKeyStore } from "../secret-key-store";
 import { KeyType } from "../key-type";
 
-const ssmMock = new SSMParameterMock();
-const secretsManagerMock = new SecretsManagerMock();
-
-jest.mock("aws-sdk", () => ({
-  SSM: jest.fn().mockImplementation(() => ssmMock.implementation),
-  SecretsManager: jest
-    .fn()
-    .mockImplementation(() => secretsManagerMock.implementation),
-}));
+const ssmClientMock = mockClient(SSMClient);
+const secretsManagerClientMock = mockClient(SecretsManagerClient);
 
 beforeEach(() => {
-  ssmMock.reset();
-  secretsManagerMock.reset();
+  secretsManagerClientMock.reset();
+  ssmClientMock.reset();
 });
 
 test("ssm parameter store", async () => {
   const value = "secret";
   const parameterName = "foo";
+  const requestParams = {
+    Name: parameterName,
+    Value: value,
+    Type: ParameterType.SECURE_STRING,
+    Overwrite: true,
+  };
+
+  ssmClientMock.on(PutParameterCommand, requestParams).resolves({});
 
   const secretKeyStoreString = JSON.stringify({
     secretKeyType: KeyType.SSM_PARAMETER,
@@ -31,12 +35,18 @@ test("ssm parameter store", async () => {
 
   secretKeyStore.putSecret(value);
 
-  expect(ssmMock.getParameter(parameterName).Value).toBe(value);
+  expect(ssmClientMock).toHaveReceivedCommandWith(PutParameterCommand, requestParams);
 });
 
 test("secrets manger store", async () => {
   const value = "secret";
   const secretId = "foo";
+  const requestParams = {
+    SecretId: secretId,
+    SecretString: value,
+  };
+
+  secretsManagerClientMock.on(PutSecretValueCommand, requestParams).resolves({});
 
   const secretKeyStoreString = JSON.stringify({
     secretKeyType: KeyType.SECRETS_MANAGER,
@@ -47,5 +57,5 @@ test("secrets manger store", async () => {
 
   secretKeyStore.putSecret(value);
 
-  expect(secretsManagerMock.getSecretString(secretId)).toBe(value);
+  expect(secretsManagerClientMock).toHaveReceivedCommandWith(PutSecretValueCommand, requestParams);
 });

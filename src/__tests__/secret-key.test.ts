@@ -1,21 +1,16 @@
-import { SSMParameterMock } from "./ssm-parameter-mock";
-import { SecretsManagerMock } from "./secrets-manager-mock";
+import { GetSecretValueCommand, SecretsManagerClient } from "@aws-sdk/client-secrets-manager";
+import { GetParameterCommand, ParameterType, SSMClient } from "@aws-sdk/client-ssm";
+import { mockClient } from 'aws-sdk-client-mock';
+
 import { SecretKey } from "../secret-key";
 import { KeyType } from "../key-type";
 
-const ssmMock = new SSMParameterMock();
-const secretsManagerMock = new SecretsManagerMock();
-
-jest.mock("aws-sdk", () => ({
-  SSM: jest.fn().mockImplementation(() => ssmMock.implementation),
-  SecretsManager: jest
-    .fn()
-    .mockImplementation(() => secretsManagerMock.implementation),
-}));
+const secretsManagerClientMock = mockClient(SecretsManagerClient);
+const ssmClientMock = mockClient(SSMClient);
 
 beforeEach(() => {
-  ssmMock.reset();
-  secretsManagerMock.reset();
+  secretsManagerClientMock.reset();
+  ssmClientMock.reset();
 });
 
 test("plain text secret", async () => {
@@ -34,11 +29,17 @@ test("plain text secret", async () => {
 test("ssm parameter secret", async () => {
   const value = "secret";
   const parameterName = "foo";
-
-  ssmMock.addParameter({
+  const requestParams = {
     Name: parameterName,
-    Type: "SecureString",
-    Value: value,
+    WithDecryption: true,
+  };
+
+  ssmClientMock.on(GetParameterCommand, requestParams).resolvesOnce({
+    Parameter: {
+      Name: parameterName,
+      Type: ParameterType.SECURE_STRING,
+      Value: value,
+    }
   });
 
   const secretKeyString = JSON.stringify({
@@ -54,8 +55,16 @@ test("ssm parameter secret", async () => {
 test("secrets manger secret", async () => {
   const value = "secret";
   const secretId = "foo";
+  const requestParams = {
+    SecretId: secretId,
+    VersionId: undefined,
+    VersionStage: undefined,
+  };
 
-  secretsManagerMock.addSecretString(secretId, value);
+  secretsManagerClientMock.on(GetSecretValueCommand, requestParams).resolvesOnce({
+    Name: secretId,
+    SecretString: value,
+  });
 
   const secretKeyString = JSON.stringify({
     secretKeyType: KeyType.SECRETS_MANAGER,
@@ -71,8 +80,16 @@ test("secrets manger secret with fieldName", async () => {
   const value = "secret";
   const secretString = JSON.stringify({ xxx: value });
   const secretId = "foo";
+  const requestParams = {
+    SecretId: secretId,
+    VersionId: undefined,
+    VersionStage: undefined,
+  };
 
-  secretsManagerMock.addSecretString(secretId, secretString);
+  secretsManagerClientMock.on(GetSecretValueCommand, requestParams).resolvesOnce({
+    Name: secretId,
+    SecretString: secretString,
+  });
 
   const secretKeyString = JSON.stringify({
     secretKeyType: KeyType.SECRETS_MANAGER,

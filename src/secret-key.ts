@@ -1,4 +1,4 @@
-import { ConfigurationOptions } from "aws-sdk";
+import { SSMClientConfig } from '@aws-sdk/client-ssm';
 import {
   ssmParameter,
   secretsManagerSecret,
@@ -13,7 +13,7 @@ export interface SecretKeyOptions {
   readonly maxAge?: number;
 
   /** The service configuration options */
-  readonly configuration?: ConfigurationOptions;
+  readonly configuration?: SSMClientConfig;
 }
 
 export class SecretKey {
@@ -34,7 +34,7 @@ export class SecretKey {
       case KeyType.SSM_PARAMETER: {
         if (!this.param) {
           this.param = ssmParameter({
-            ssmConfiguration: this.options?.configuration,
+            ssmClientConfig: this.options?.configuration,
             maxAge: this.options?.maxAge,
             name: props.parameterName,
             withDecryption: true,
@@ -53,7 +53,7 @@ export class SecretKey {
       case KeyType.SECRETS_MANAGER: {
         if (!this.param) {
           this.param = secretsManagerSecret({
-            secretsManagerConfiguration: this.options?.configuration,
+            secretsManagerClientConfig: this.options?.configuration,
             maxAge: this.options?.maxAge,
             secretId: props.secretId,
           });
