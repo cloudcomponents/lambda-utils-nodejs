@@ -1,25 +1,25 @@
-name: CI
+name: Build
 
 on:
   push:
-    branches:    
-      - main 
+    branches:
+      - main
   pull_request:
-    branches:    
-      - main   
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x, 14.x]
+        node: ["16", "18", "20"]
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node }}
+      uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: ${{ matrix.node }}
     - name: Installing
       run: yarn install --frozen-lockfile
     - name: Linting
