@@ -1,8 +1,8 @@
 [![cloudcomponents Logo](https://raw.githubusercontent.com/cloudcomponents/cdk-constructs/master/logo.png)](https://github.com/cloudcomponents/cdk-constructs)
 
-# @cloudcomponents/lambda-utils 
+# @cloudcomponents/lambda-utils
 
-[![Build Status](https://github.com/cloudcomponents/lambda-utils-nodejs/workflows/CI/badge.svg)](https://github.com/cloudcomponents/lambda-utils-nodejs/actions?query=workflow=CI)
+[![Build Status](https://github.com/cloudcomponents/lambda-utils-nodejs/actions/workflows/ci.yaml/badge.svg)](https://github.com/cloudcomponents/lambda-utils-nodejs/actions/workflows/ci.yaml)
 
 > Lambda utils for cloudcomponents cdk constructs
 
